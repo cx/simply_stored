@@ -34,6 +34,10 @@ module SimplyStored
         def message(instance)
           super || "is invalid"
         end
+        
+        def i18n
+          super || "#{i18n_prefix}.invalid"
+        end
       end
   
       class ValidatesUniquenessOf < ::Validatable::ValidationBase
@@ -50,6 +54,10 @@ module SimplyStored
         def message(instance)
           super || "#{attribute.to_s.try(:humanize) || attribute.to_s} is already taken"
         end
+        
+        def i18n
+          super || "#{i18n_prefix}.not_unique"
+        end
       end
       
       def validates_inclusion_of(*args)
@@ -62,7 +70,9 @@ module SimplyStored
       
       def validates_uniqueness_of(*args)
         args.each do |name|
-          view "by_#{name}", :key => name
+          if not respond_to?("by_#{name}")
+            view "by_#{name}", :key => name
+          end
         end
         
         add_validations(args, ValidatesUniquenessOf)
