@@ -33,7 +33,10 @@ module SimplyStored
       
       def define_has_many_through_getter(name, options, through)
         raise ArgumentError, "no such relation: #{self} - #{through}" unless instance_methods.map(&:to_sym).include?(through.to_sym)
-        
+
+        through_class = class_from_property_name(through)
+        through_class = through_class ? through_class : through
+
         define_method(name) do |*args|
           local_options = args.first && args.first.is_a?(Hash) && args.first
           if local_options
@@ -53,7 +56,7 @@ module SimplyStored
           if forced_reload || cached_results[cache_key].nil?
             
             # there is probably a faster way to query this
-            intermediate_objects = find_associated(through, self.class, :with_deleted => with_deleted, :limit => limit, :foreign_key => options[:foreign_key])
+            intermediate_objects = find_associated(through_class, self.class, :with_deleted => with_deleted, :limit => limit, :foreign_key => options[:foreign_key])
             
             through_objects = intermediate_objects.map do |intermediate_object|
               intermediate_object.send(name.to_s.singularize.underscore, :with_deleted => with_deleted)
@@ -145,7 +148,21 @@ module SimplyStored
           opt.blank? ? :all : opt.to_s
         end
       end
-      
+
+      def class_from_property_name(name)
+        klass = nil
+        if (properties.list && name)
+          properties.list.each do |item|
+            if (item.name.to_s == name.to_s && item.options[:class_name])
+              klass = item.options[:class_name].to_sym
+              break
+            end
+          end
+        end
+        klass
+      end
+      private :class_from_property_name
+
       class Property
         attr_reader :name, :options
         
@@ -177,7 +194,7 @@ module SimplyStored
             end
           end
         end
-        
+
         def dirty?(object)
           false
         end

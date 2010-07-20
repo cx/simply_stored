@@ -2097,6 +2097,33 @@ class CouchTest < Test::Unit::TestCase
       end
       
     end
-    
+
+    context "when using custom association names for has_many and belongs_to" do
+      should "Be able to save and load properly" do
+        g1 = MyNode.new(:title => "G1", :description => "Generation 1 - Root")
+        g1.save
+
+        g2 = MyNode.new(:title => "G2", :description => "Generation 2 - Child")
+        g2.save
+
+        g3 = MyNode.new(:title => "G3", :description => "Generation 3 - Grandchild")
+        g3.save
+
+        r = MyNodeLink.new(:my_node => g1, :child => g2)
+        r.save
+
+        r = MyNodeLink.new(:my_node => g2, :child => g3)
+        r.save
+
+        h1 = MyNode.find(g1.id)
+        assert_equal g1.id, h1.id
+        assert_equal 1, g1.children.length
+        assert_equal g2.id, h1.children[0].id
+        assert_equal 1, g2.children.length
+        assert_equal g3.id, h1.children[0].children[0].id
+        assert_equal 0, g3.children.length
+      end
+    end
+
   end
 end

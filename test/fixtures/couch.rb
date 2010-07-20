@@ -200,3 +200,34 @@ class Servant
   
   belongs_to :master
 end
+
+class MyNode
+  include SimplyStored::Couch
+
+  property :title
+  property :description
+
+  # Self join (sub items)
+  has_many :links, :class_name => "MyNodeLink"
+  has_many :children, :through => :links
+end
+
+class MyNodeLink
+  include SimplyStored::Couch
+
+  belongs_to :my_node
+  belongs_to :child, :class_name => "MyNode"
+end
+
+class Session
+  include SimplyStored::Couch
+  property :title
+  
+  belongs_to :web_session
+end
+
+class WebSession
+  include SimplyStored::Couch
+  has_one :session
+  #has_one :secure_session, :class_name => "Session"
+end
