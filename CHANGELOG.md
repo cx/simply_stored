@@ -1,6 +1,13 @@
 Changelog
 =============
 
+0.3.8
+
+- Fix loading of has_many/has_one associations for inherited relations.
+
+- Pre-populate the parent object on has_many and has_one associations so that user.posts.first.user
+  doesn't reload the user.
+
 - Add support for associations not named after the class [akm]
 
 0.3.3

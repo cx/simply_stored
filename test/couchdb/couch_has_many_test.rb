@@ -13,6 +13,16 @@ class CouchHasManyTest < Test::Unit::TestCase
         user = User.new
         assert user.respond_to?(:posts)
       end
+
+       should "raise an error if another property with the same name already exists" do
+        assert_raise(RuntimeError) do
+          class ::DoubleHasManyUser
+            include SimplyStored::Couch
+            property :other_users
+            has_many :other_users
+          end
+        end
+      end
       
       should "fetch the associated objects" do
         user = User.create(:title => "Mr.")
@@ -22,7 +32,18 @@ class CouchHasManyTest < Test::Unit::TestCase
           post.save!
         }
         assert_equal 3, user.posts.size
-        user.posts
+      end
+      
+      should "set the parent object on the clients cache" do
+        User.expects(:find).never
+        user = User.create(:title => "Mr.")
+        3.times {
+          post = Post.new
+          post.user = user
+          post.save!
+        }
+        post = user.posts.first
+        assert_equal user, user.posts.first.user
       end
       
       context "limit" do
@@ -142,6 +163,15 @@ class CouchHasManyTest < Test::Unit::TestCase
         post.user = user
         post.save!
         assert_equal [post], user.posts(:force_reload => true)
+      end
+      
+      should "use the correct view when handling inheritance" do
+        problem = Problem.create
+        big_problem = BigProblem.create
+        issue = Issue.create(:name => 'Thing', :problem => problem)
+        assert_equal 1, problem.issues.size
+        issue.update_attributes(:problem_id => nil, :big_problem_id => big_problem.id)
+        assert_equal 1, big_problem.issues.size
       end
       
       context "when adding items" do

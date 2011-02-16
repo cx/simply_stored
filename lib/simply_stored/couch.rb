@@ -1,9 +1,14 @@
 require 'validatable'
 require 'couch_potato'
+
 require 'active_support'
+unless {}.respond_to?(:assert_valid_keys)
+  require 'active_support/core_ext'
+end
 
 require File.expand_path(File.dirname(__FILE__) + '/../simply_stored')
 require 'simply_stored/couch/validations'
+require 'simply_stored/couch/properties'
 require 'simply_stored/couch/finders'
 require 'simply_stored/couch/find_by'
 require 'simply_stored/couch/belongs_to'
@@ -33,6 +38,7 @@ module SimplyStored
     module ClassMethods
       include SimplyStored::ClassMethods::Base
       include SimplyStored::Couch::Validations
+      include SimplyStored::Couch::Properties
       include SimplyStored::Couch::BelongsTo
       include SimplyStored::Couch::HasMany
       include SimplyStored::Couch::HasOne

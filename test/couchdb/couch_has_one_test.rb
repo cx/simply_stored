@@ -11,11 +11,38 @@ class CouchHasOneTest < Test::Unit::TestCase
     should "add a getter method" do
       assert Instance.new.respond_to?(:identity)
     end
+
+    should "raise an error if another property with the same name already exists" do
+      assert_raise(RuntimeError) do
+        class ::DoubleHasOneUser
+          include SimplyStored::Couch
+          property :user
+          has_one :user
+        end
+      end
+    end
     
     should "fetch the object when invoking the getter" do
       instance = Instance.create
       identity = Identity.create(:instance => instance)
       assert_equal identity, instance.identity
+    end
+    
+    should "set the parent object on the clients cache" do
+      Instance.expects(:find).never
+      instance = Instance.create
+      identity = Identity.create(:instance => instance)
+      
+      assert_equal instance, instance.identity.instance      
+    end
+    
+    should "use the correct view when handling inheritance" do
+      problem = Problem.create
+      big_problem = BigProblem.create
+      issue = Issue.create(:name => 'Thing', :problem => problem)
+      assert_equal issue, problem.issue
+      issue.update_attributes(:problem_id => nil, :big_problem_id => big_problem.id)
+      assert_equal issue, big_problem.issue
     end
     
     should "verify the given options for the accessor method" do
