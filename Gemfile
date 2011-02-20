@@ -27,11 +27,9 @@ group :development, :test do
   gem 'jeweler', '1.5.2'
   gem 'shoulda', '2.11.3'
   gem 'mocha', '0.9.12'
+  gem 'test-unit', '2.2.0'
 
   # To use debugger (ruby-debug for Ruby 1.8.7+, ruby-debug19 for Ruby 1.9.2+)
   # gem 'ruby-debug'
   # gem 'ruby-debug19'
-
-  # Needed if using Ruby 1.9.2 (RubyMine IDE complains):
-  # gem 'test-unit'
 end
