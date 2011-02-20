@@ -2,7 +2,7 @@
 # The gem versions in this configuration are able to run all CouchDB tests using
 # Ruby 1.8.7 p330. (Latest 1.8.7 Ruby version as of testing).
 #
-# Couch Potato 0.3.1 to 0.4.1 (latest as of testing) breaks the Couch DB unit tests.
+# Couch Potato 0.3.1 to 0.4.0 (latest as of testing) breaks the Couch DB unit tests.
 # Ruby 1.9.2 p136 (latest as of testing) also breaks the Couch DB unit tests.  I did not try earlier versions.
 #
 # I don't use SimpleDB, so I cannot comment on whether this configuration is able to run the SimpleDB tests.
@@ -27,9 +27,11 @@ group :development, :test do
   gem 'jeweler', '1.5.2'
   gem 'shoulda', '2.11.3'
   gem 'mocha', '0.9.12'
-  gem 'test-unit', '2.2.0'
 
   # To use debugger (ruby-debug for Ruby 1.8.7+, ruby-debug19 for Ruby 1.9.2+)
   # gem 'ruby-debug'
   # gem 'ruby-debug19'
+
+  # Needed if using Ruby 1.9.2
+  #gem 'test-unit', '2.2.0'
 end
