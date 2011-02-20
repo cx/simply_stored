@@ -1,8 +1,8 @@
 source 'http://rubygems.org'
 
 gem 'rails', '3.0.4'
-gem 'couch_potato'
-gem 'json'
+gem 'couch_potato', '0.3.0'
+gem 'json', '1.5.1'
 gem 'mattmatt-validatable'
 
 # Bundle edge Rails instead:
@@ -30,9 +30,9 @@ gem 'mattmatt-validatable'
 # put test-only gems in this group so their generators
 # and rake tasks are available in development mode:
 group :development, :test do
-  gem 'jeweler'
-  gem 'shoulda'
-  gem 'mocha'
-  gem 'right_aws'
-  gem 'uuidtools'
+  gem 'jeweler', '1.5.2'
+  gem 'shoulda', '2.11.3'
+  gem 'mocha', '0.9.12'
+  gem 'right_aws', '2.0.0'
+  gem 'uuidtools', '2.1.2'
 end
